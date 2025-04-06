@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -54,7 +55,10 @@ fun ChatScreen(
     MessageViewModel = viewModel(),
 ) {
     val messages by messageViewModel.messages.observeAsState(emptyList())
-    messageViewModel.setRoomId(roomId)
+    LaunchedEffect(roomId) {
+        messageViewModel.setRoomId(roomId)
+    }
+
     val text = remember { mutableStateOf("") }
     Column(
         modifier = Modifier
@@ -144,7 +148,7 @@ fun ChatMessageItem(message: Message) {
             )
         )
         Text(
-            text = formatTimestamp(message.timestamp), // Replace with actual timestamp logic
+            text = formatTimestamp(message.timestamp),
             style = TextStyle(
                 fontSize = 12.sp,
                 color = Color.Gray

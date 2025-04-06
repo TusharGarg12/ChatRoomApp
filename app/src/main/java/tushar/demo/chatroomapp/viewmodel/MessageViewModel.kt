@@ -1,5 +1,6 @@
 package tushar.demo.chatroomapp.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,12 @@ import tushar.demo.chatroomapp.data.Result.*
 import tushar.demo.chatroomapp.data.User
 import tushar.demo.chatroomapp.data.UserRepository
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import tushar.demo.chatroomapp.RetrofitClient
+import tushar.demo.chatroomapp.data.MessageRequest
+import tushar.demo.chatroomapp.data.MessageResponse
 
 class MessageViewModel : ViewModel() {
 
@@ -27,7 +34,6 @@ class MessageViewModel : ViewModel() {
         loadCurrentUser()
     }
 
-
     private val _messages = MutableLiveData<List<Message>>()
     val messages: LiveData<List<Message>> get() = _messages
 
@@ -41,43 +47,41 @@ class MessageViewModel : ViewModel() {
     }
 
     fun sendMessage(text: String) {
-        if (_currentUser.value != null) {
-            val message = Message(
-                senderFirstName = _currentUser.value!!.firstName,
-                senderId = _currentUser.value!!.email,
-                text = text
-            )
-            viewModelScope.launch {
-                when (messageRepository.sendMessage(_roomId.value.toString(), message)) {
-                    is Success -> {
-                        loadMessages()
-                    }
-                    is Error -> {
+        val currentUser = _currentUser.value ?: return
+        val roomId = _roomId.value ?: return
 
-                    }
-                }
-            }
-        }
-    }
+        val message = Message(
+            senderId = currentUser.email ?: "unknown",
+            senderFirstName = currentUser.firstName ?: "You",
+            text = text,
+            timestamp = System.currentTimeMillis(),
+            isSentByCurrentUser = true
+        )
 
-
-    fun loadMessages() {
         viewModelScope.launch {
-            if (_roomId != null) {
-                messageRepository.getChatMessages(_roomId.value.toString())
-                    .collect { _messages.value = it }
+            messageRepository.sendMessage(roomId, message)
+        }
+    }
+
+     fun loadMessages() {
+        viewModelScope.launch {
+            _roomId.value?.let { roomId ->
+                messageRepository.getChatMessages(roomId)
+                    .collect { messageList ->
+                        _messages.value = messageList
+                    }
             }
         }
     }
 
-    private fun loadCurrentUser() {
+     fun loadCurrentUser() {
         viewModelScope.launch {
             when (val result = userRepository.getCurrentUser()) {
                 is Success -> _currentUser.value = result.data
                 is Error -> {
-
+                    // Optional: handle error case
+                    Log.e("User", "Failed to load user: ${result.exception.message}")
                 }
-
             }
         }
     }

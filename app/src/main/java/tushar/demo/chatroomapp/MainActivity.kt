@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import tushar.demo.chatroomapp.screen.AIChatScreen
 import tushar.demo.chatroomapp.screen.ChatRoomListScreen
 import tushar.demo.chatroomapp.screen.ChatScreen
 import tushar.demo.chatroomapp.screen.LoginScreen
@@ -68,15 +69,23 @@ fun NavigationGraph(
             }
         }
         composable(Screen.ChatRoomsScreen.route) {
-            ChatRoomListScreen {
-                navController.navigate("${Screen.ChatScreen.route}/${it.id}")
-            }
+            ChatRoomListScreen(
+                onJoinClicked = { room ->
+                    navController.navigate("${Screen.ChatScreen.route}/${room.id}")
+                },
+                onAIHelpClicked = {
+                    navController.navigate(Screen.AIChatScreen.route)
+                }
+            )
         }
 
         composable("${Screen.ChatScreen.route}/{roomId}") {
             val roomId: String = it
                 .arguments?.getString("roomId") ?: ""
             ChatScreen(roomId = roomId)
+        }
+        composable(Screen.AIChatScreen.route) {
+            AIChatScreen()
         }
     }
 }

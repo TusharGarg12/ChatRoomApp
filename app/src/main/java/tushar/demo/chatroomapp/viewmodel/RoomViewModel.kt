@@ -1,5 +1,6 @@
 package tushar.demo.chatroomapp.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,11 +23,20 @@ class RoomViewModel : ViewModel() {
 
     fun createRoom(name: String) {
         viewModelScope.launch {
-            roomRepository.createRoom(name)
+            when (val result = roomRepository.createRoom(name)) {
+                is Success -> {
+                    loadRooms()
+                }
+                is Error -> {
+                }
+            }
         }
     }
 
-     fun loadRooms() {
+
+
+
+    fun loadRooms() {
         viewModelScope.launch {
             when (val result = roomRepository.getRooms()) {
                 is Success -> _rooms.value = result.data

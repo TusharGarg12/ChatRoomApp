@@ -1,6 +1,8 @@
 package tushar.demo.chatroomapp.data
 
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 class RoomRepository(private val firestore: FirebaseFirestore) {
@@ -22,4 +24,7 @@ class RoomRepository(private val firestore: FirebaseFirestore) {
     } catch (e: Exception) {
         Result.Error(e)
     }
+
+
+
 }
