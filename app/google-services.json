@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "571586916225",
+    "project_id": "thechatapp-2b183",
+    "storage_bucket": "thechatapp-2b183.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571586916225:android:15b36e8c181b7e90558280",
+        "android_client_info": {
+          "package_name": "tushar.demo.chatroomapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7EgIzDYPXaHJu14blt5JdBmGpLwq3u0A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
